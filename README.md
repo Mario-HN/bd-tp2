@@ -1,5 +1,5 @@
 # Alunos
-Gabriel Pacheco, Max Souza, Noah Diunkz
+X, Y e Z
 
 ------------------------------------------------------------------
 
