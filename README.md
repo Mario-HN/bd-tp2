@@ -1,3 +1,5 @@
+nota do mario: fiquei com dificuldade de mudar os arquivos hash.cpp, seek2.cpp e os arquivos do diretório B+Tree, se quiserem tentar dar uma mexida
+
 # Alunos
 Beatriz Emilly Silva Aguiar, 
 Matheus Souza de Oliveira e 
