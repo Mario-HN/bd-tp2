@@ -1,20 +1,15 @@
 #ifndef SEC_INDEX_H
-#define SEC_INDEX_H
 
-using namespace std;
+#define SEC_INDEX_H
+#define M 50                   //Ordem da árvore
+#define N_POINTERS 2 * M + 1   //Quantidade de apontadores para cada nó
+#define N_KEYS 2 * M           //Quantidade de chaves para cada nó
+#define SEC_INDEX_FILE_NAME "secondaryIndexFile"
+
 #include <fstream>
 #include "../Implementacao/hash.hpp"
 
-//Ordem da árvore
-#define M 50
-
-//Quantidade de apontadores para cada nó
-#define N_POINTERS 2 * M + 1
-
-//Quantidade de chaves para cada nó
-#define N_KEYS 2 * M
-
-#define SEC_INDEX_FILE_NAME "secondaryIndexFile"
+using namespace std;
 
 struct Node{
 	int tamaho;               //Qtd de chaves ocupadas no nó
@@ -31,7 +26,7 @@ struct NodeAux{
 
 struct Head{
 	int posicaoRaiz;          
-	int qtdNoh;            
+	int qtdNo;            
 };
 
 void InsereArqIndiceSec(fstream *hashFile, fstream *secIdxFile);
