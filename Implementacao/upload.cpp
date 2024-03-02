@@ -10,7 +10,7 @@ using namespace std;
 #include <cstring>
 
 // Remove arquivos anteriormente gerados no diretório
-void removeArquivos(){
+void removeArquivos() {
     remove(HASH_FILE_NAME);
     remove(PRIM_INDEX_FILE_NAME);
     remove(SEC_INDEX_FILE_NAME);
@@ -23,41 +23,41 @@ void copiaString(char* a, string b, int tamaho) {
 }
 
 // Parser de arquivo e armazena na estrutura Article
-Article parserLinhaArquivoDeEntrada(std::string line){
-	Article article;
-	std::string delimiter = "\";"; //Delimitador utilizado   ";
-	size_t pos = 0;
-	std::string token;
-	int column = 0;
+Article parserLinhaArquivoDeEntrada(std::string line) {
+    Article article;
+    std::string delimiter = "\";"; //Delimitador utilizado   ";
+    size_t pos = 0;
+    std::string token;
+    int column = 0;
 
-	while ((pos = line.find(delimiter)) != std::string::npos) {
+    while ((pos = line.find(delimiter)) != std::string::npos) {
        
        token = line.substr(1, pos-1);
        //Extracao dos campos
-	    if (column == 0){
-	    	article.id= atoi(token.c_str());
-	    }
-	    else if(column == 1){
-	    	copiaString(article.title, token.c_str(), T_TITLE);
-	    }
-	    else if(column == 2){
-	    	article.year = atoi(token.c_str());
-	    }
-	    else if(column == 3){
+        if (column == 0){
+            article.id= atoi(token.c_str());
+        }
+        else if(column == 1){
+            copiaString(article.title, token.c_str(), T_TITLE);
+        }
+        else if(column == 2){
+            article.year = atoi(token.c_str());
+        }
+        else if(column == 3){
 
             copiaString(article.author, token.c_str(), T_AUTHOR);
-	    }
-	    else if(column == 4){
-	    	article.citations = atoi(token.c_str());
-	    }
+        }
+        else if(column == 4){
+            article.citations = atoi(token.c_str());
+        }
         else if(column == 5){
             copiaString(article.update, token.c_str(), T_UPDATE);
         }
-	    line.erase(0, pos + delimiter.length());   
-	    column ++;
-	}
+        line.erase(0, pos + delimiter.length());   
+        column ++;
+    }
 
-	if(line.length() > 0){
+    if(line.length() > 0){
         token = line.substr(0, line.length()-1);
 
         if(strcmp(token.c_str(), "NULL") != 0){
@@ -65,13 +65,13 @@ Article parserLinhaArquivoDeEntrada(std::string line){
         }
 
         copiaString(article.snippet, token.c_str(), T_SNIPPET);
-	}
+    }
     return article;
 }
 
 
-int main(int argc, char *argv[]){
-	if(argc<2) {
+int main(int argc, char *argv[]) {
+    if(argc<2) {
         cout << "Qual o nome do arquivo de entrada?\nEx: upload <file>\n";
         return 1;
     }
@@ -91,21 +91,20 @@ int main(int argc, char *argv[]){
     fstream *secondaryIndexFile = new fstream(SEC_INDEX_FILE_NAME,fstream::in|fstream::out|fstream::trunc|ios::binary); //Cria arquivo de indice secundário
     fstream *primaryIndexFile = new fstream(PRIM_INDEX_FILE_NAME,fstream::in|fstream::out|fstream::trunc|ios::binary); //Cria arquivo de indice primário
 
-    cout << "Carregando os registros no arquivo de dados. Isso pode demorar um pouco..."<<endl;
-    cout << "Considere uma pausa para o café..."<<endl;
+    cout << "Carregando os registros no arquivo de dados..."<<endl;
 
     while (getline(file, line)){
         Article article = parserLinhaArquivoDeEntrada(line); //Faz o parserLinhaArquivoDeEntrada de cada linha do arquivo de entrada
-        insereArquivoHash(hashFile, article); 	//Insere artigo no arquivo de dados
+        insereArquivoHash(hashFile, article);   //Insere artigo no arquivo de dados
     }
 
-    cout << "Quase lá! Carregando os dados no arquivo de índice primário..." << endl;
+    cout << "Carregando os dados no arquivo índice primário..." << endl;
     InsereArqIndicePrim(hashFile, primaryIndexFile);
 
-    cout << "Falta pouco! Carregando os dados no arquivo de índice secundário..." << endl;
+    cout << "Carregando os dados no arquivo índice secundário..." << endl;
     InsereArqIndiceSec(hashFile, secondaryIndexFile); //Carrega os dados no arquivo de índice secundário
 
-    cout << "Prontinho! :)" << endl;
+    cout << "Concluído." << endl;
     hashFile->close();
     primaryIndexFile->close();
     secondaryIndexFile->close();

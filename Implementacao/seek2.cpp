@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
-
 #include "../B+Tree/IndiceSecundario.hpp"
 #include "hash.hpp"
 

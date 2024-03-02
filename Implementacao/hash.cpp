@@ -4,7 +4,6 @@
 #include <string.h>
 #include "hash.hpp"
 
-
 int collision = 0;
 
 void inicializaArquivoDeSaida(fstream *f){
@@ -19,13 +18,11 @@ void inicializaArquivoDeSaida(fstream *f){
 }
 
 int hashing(int id) {
-    // Função hashing modular. Converte dados de entrada em um valor de hash fixo.
     return id % N_BUCKETS;
 }
 
 
 Block consultaBucketPorId(fstream *f, int id) {
-
     Block buffer={0};
     int bucketKey = hashing(id);
 
@@ -49,18 +46,6 @@ void imprimirRegistroArt(Article article) {
         << "\n*Snippet: "        << article.snippet 
         << endl << endl;
 }
-
-//void imprimirRegistroArt(Article article) {
-////    cout<< "------------------------------------------------" <<
-//        << "\n*ID: "             << article.id
-//        << "\n*Titulo: "         << article.title
-//        << "\n*Ano: "            << article.year
-//        << "\n*Autor: "          << article.author
-//        << "\n*Citações:"        << article.citations
-//        << "\n*Atualização: "    << article.update
-//        << "\n*Snippet: "        << article.snippet
-//        << endl << endl;
-//}
 
 
 bool insereArquivoHash(fstream *f, Article article) {

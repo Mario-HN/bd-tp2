@@ -21,12 +21,12 @@ void atualizaCabecalhoIndSecundario(){
 void inicializaCabecalhoSecundario(){
 	head = (Head *)malloc(sizeof(Head));
 	head->posicaoRaiz = -1;
-	head->qtdNoh = 0;
+	head->qtdNo = 0;
 	//Escreve cabeçalho no arquivo
 	atualizaCabecalhoIndSecundario();
 }
 
-Node* criarNovoNohSecundario(){
+Node* criarNovoNoSecundario(){
 	Node *node = (Node *) malloc(sizeof(Node));
 	node->tamaho = 0;
 	node->posicao = 0;
@@ -41,20 +41,20 @@ Node* criarNovoNohSecundario(){
 	return node;
 }
 
-int insereNohArqIndice(Node *node){
+int insereNoArqIndice(Node *node){
 	//qtd nós adicionados
-	head->qtdNoh++;
+	head->qtdNo++;
 	//Posiciona cursor
-	secF->seekp(head->qtdNoh*sizeof(Node), secF->beg);
+	secF->seekp(head->qtdNo*sizeof(Node), secF->beg);
 	//Escreve o nó no arquivo de indice
 	secF->write((char*)node,sizeof(Node));
 	//qtd nós
 	atualizaCabecalhoIndSecundario();
 
-	return head->qtdNoh;
+	return head->qtdNo;
 }
 
-void atualizaNohArquivo(Node *node){
+void atualizaNoArquivo(Node *node){
 	//Posiciona o cursor
 	secF->seekp(node->posicao*sizeof(Node), secF->beg);
 	//Escreve o nó no arq
@@ -79,10 +79,10 @@ void InsereChavPagDisponivel(Node *node, char chave[T_TITLE], int apontador){
 	strcpy(node->chave[i],chave);
 	node->apontador[i] = apontador;
 	node->tamaho++;
-	atualizaNohArquivo(node);
+	atualizaNoArquivo(node);
 }
 
-void InsereChavNohDisponivel(Node *node, char chave[T_TITLE], int apontador){
+void InsereChavNoDisponivel(Node *node, char chave[T_TITLE], int apontador){
 	int i;
 	for(i=0; i < node->tamaho; i++){
 		if(strcmp(node->chave[i],chave) > 0){
@@ -96,14 +96,14 @@ void InsereChavNohDisponivel(Node *node, char chave[T_TITLE], int apontador){
 	strcpy(node->chave[i],chave);
 	node->apontador[i+1] = -1 * apontador;
 	node->tamaho++;
-	atualizaNohArquivo(node);
+	atualizaNoArquivo(node);
 }
 
 NodeAux* InsereChavPagCheia(Node *node, char chave[T_TITLE], int apontador){
 	// Trata a inserção da chave para o caso em que a página de dados já está cheia
 	int added=0;
     char pivot[T_TITLE];
-	Node *newNode = criarNovoNohSecundario();
+	Node *newNode = criarNovoNoSecundario();
 	NodeAux *newParent = (NodeAux *) malloc(sizeof(NodeAux));
 	strcpy(pivot,node->chave[M]);
 
@@ -154,10 +154,10 @@ NodeAux* InsereChavPagCheia(Node *node, char chave[T_TITLE], int apontador){
 		}
 	}
 	newNode->apontador[N_POINTERS - 1] = node->apontador[N_POINTERS - 1];
-	newNode->posicao = insereNohArqIndice(newNode);
+	newNode->posicao = insereNoArqIndice(newNode);
 	node->apontador[N_POINTERS - 1] = -1 * newNode->posicao;
-	atualizaNohArquivo(node);
-	atualizaNohArquivo(newNode);
+	atualizaNoArquivo(node);
+	atualizaNoArquivo(newNode);
 	strcpy(newParent->chave, pivot);
 	newParent->ponteiroEsquerda = -1 * node->posicao;
 	newParent->ponteiroDireita = -1 * newNode->posicao;
@@ -165,10 +165,10 @@ NodeAux* InsereChavPagCheia(Node *node, char chave[T_TITLE], int apontador){
 	return newParent;
 }
 
-NodeAux* InsereChavNohCheio(Node *node, char chave[T_TITLE], int apontador){
+NodeAux* InsereChavNoCheio(Node *node, char chave[T_TITLE], int apontador){
 	int added=0;
     char pivot[T_TITLE];
-	Node *newNode = criarNovoNohSecundario();
+	Node *newNode = criarNovoNoSecundario();
 	NodeAux *newParent = (NodeAux *) malloc(sizeof(NodeAux));
 	strcpy(pivot,node->chave[M]);
 	strcpy(node->chave[M],"\0");
@@ -226,9 +226,9 @@ NodeAux* InsereChavNohCheio(Node *node, char chave[T_TITLE], int apontador){
 		}
 	}
 
-	newNode->posicao = insereNohArqIndice(newNode);
-	atualizaNohArquivo(newNode);
-	atualizaNohArquivo(node);
+	newNode->posicao = insereNoArqIndice(newNode);
+	atualizaNoArquivo(newNode);
+	atualizaNoArquivo(node);
 
 	strcpy(newParent->chave, pivot);
 	newParent->ponteiroEsquerda = -1 * node->posicao;
@@ -237,14 +237,14 @@ NodeAux* InsereChavNohCheio(Node *node, char chave[T_TITLE], int apontador){
 	return newParent;
 }
 
-Node* consultaNohSecArquivo(int posicao){
+Node* consultaNoSecArquivo(int posicao){
 	//Retorna o nó do arquivo de indice a partir da posição informada
 	if(posicao > 0){
 		cout << "Endereço errado. Insira novamente!" << endl;
 		return NULL;
 	}
 
-	Node *node = criarNovoNohSecundario();
+	Node *node = criarNovoNoSecundario();
 	//Posiciona o cursor na posição
 	secF->seekg(-1 * posicao * sizeof(Node),secF->beg);
 	//Copia o nó
@@ -282,18 +282,18 @@ NodeAux* insereChaveArvore(Node *node, char chave[T_TITLE], int apontador){
 		}
 		posicao = maxPos;
 
-		index = insereChaveArvore(consultaNohSecArquivo(node->apontador[posicao]),chave,apontador);
+		index = insereChaveArvore(consultaNoSecArquivo(node->apontador[posicao]),chave,apontador);
 
 		if(index!= NULL){
 			//Caso a página tenha espaço
 			if(strcmp(node->chave[N_KEYS - 1], "\0") == 0){
-				InsereChavNohDisponivel(node, index->chave, -1 * index->ponteiroDireita);
+				InsereChavNoDisponivel(node, index->chave, -1 * index->ponteiroDireita);
 				free(index);
 				index = NULL;
 			}
 			//Caso a página não tenha espaço
 			else{
-				NodeAux *novoRetorno = InsereChavNohCheio(node, index->chave, -1 * index->ponteiroDireita);
+				NodeAux *novoRetorno = InsereChavNoCheio(node, index->chave, -1 * index->ponteiroDireita);
 				free(index);
 				index = novoRetorno;
 			}
@@ -332,19 +332,19 @@ void populaArqIndiceSec(){
 			//Percorre os registros do bloco
             for(int j=0; j<buffer.nRegisters; j++){
 				//Insere o título (chave) do registro na árvore
-				NodeAux *page = insereChaveArvore(consultaNohSecArquivo(head->posicaoRaiz),v_article[j].title,i);
+				NodeAux *page = insereChaveArvore(consultaNoSecArquivo(head->posicaoRaiz),v_article[j].title,i);
 
 				if(page != NULL){
-					Node *node = criarNovoNohSecundario();
+					Node *node = criarNovoNoSecundario();
 					//O novo nó recebe as informações do nó criado na árvore
 					strcpy(node->chave[0],page->chave);
 					node->apontador[0] = page->ponteiroEsquerda;
 					node->apontador[1] = page->ponteiroDireita;
 					node->tamaho++;
 					//Insere o nó no arquivo
-					int pos = insereNohArqIndice(node);
+					int pos = insereNoArqIndice(node);
 					node->posicao = pos;
-					atualizaNohArquivo(node);
+					atualizaNoArquivo(node);
 					//Atualiza posição da raiz
 					head->posicaoRaiz = -1 * pos;
 					atualizaCabecalhoIndSecundario();
@@ -361,9 +361,9 @@ void InsereArqIndiceSec(fstream *hashFile, fstream *secIdxFile){
 	hashF =  hashFile;
 	secF = secIdxFile;
 	inicializaCabecalhoSecundario();
-	Node *root = criarNovoNohSecundario();
-	root->posicao = insereNohArqIndice(root); 	//Escreve nó raiz no arquivo						
-	atualizaNohArquivo(root);
+	Node *root = criarNovoNoSecundario();
+	root->posicao = insereNoArqIndice(root); 	//Escreve nó raiz no arquivo						
+	atualizaNoArquivo(root);
 	free(root);
 	populaArqIndiceSec();
 }
@@ -390,7 +390,7 @@ int pesquisaChavArqIndSec(fstream *caminhoArquivoDados,fstream *caminhoArquivoIn
 	pos = head->posicaoRaiz;
 
 	while(1){
-		node = consultaNohSecArquivo(pos);
+		node = consultaNoSecArquivo(pos);
 		blocks++;
 		if(node != NULL){
 			if(node->apontador[0] < 0){
@@ -441,7 +441,7 @@ int pesquisaChavArqIndSec(fstream *caminhoArquivoDados,fstream *caminhoArquivoIn
 	//Consulta o arquivo de dados de acordo com a posição do apontador para o registro
 	buscaBucketPorTitulo(hashF,node->apontador[pPosition], chave);
 	cout<< "------------------------------------------------" << endl;
-	cout << endl << "Total de blocos de índice armazenados: " << head->qtdNoh << endl;
+	cout << endl << "Total de blocos de índice armazenados: " << head->qtdNo << endl;
 	cout << "Quantidade total de blocos lidos: " << blocks << endl;
 	secF->close();
 	hashF->close();

@@ -4,22 +4,19 @@ Header *header = NULL;
 fstream *indexFile, *dataFile;
 
 void atualizaCabecalhoIndPrimario(){
-	//Posiciona cursor no início do arquivo
 	indexFile->seekp(0,indexFile->beg);
-	//Escreve o cabeçalho no arquivo
 	indexFile->write((char*)header, sizeof(Header));
 }
 
 void inicializaCabecalhoPrimario(){
 	header = (Header *)malloc(sizeof(Header));
 	header->posicaoRaiz = -1;
-	header->qtdNoh = 0;
-	//Escreve cabeçalho no arquivo
+	header->qtdNo = 0;
 	atualizaCabecalhoIndPrimario();
 }
 
-NohPrimario* criarNovoNohPrimario(){
-	NohPrimario *node = (NohPrimario *) malloc(sizeof(NohPrimario));
+NoPrimario* criarNovoNoPrimario(){
+	NoPrimario *node = (NoPrimario *) malloc(sizeof(NoPrimario));
 	node->tamanho = 0;
 	node->posicao = 0;
 
@@ -32,30 +29,28 @@ NohPrimario* criarNovoNohPrimario(){
 	return node;
 }
 
-int insereNohArqIndice(NohPrimario *block){
+int insereNoArqIndice(NoPrimario *block){
 	//qtd nós adicionados
-	header->qtdNoh++;
+	header->qtdNo++;
 	//Posiciona cursor
-	indexFile->seekp(header->qtdNoh*sizeof(NohPrimario), indexFile->beg);
+	indexFile->seekp(header->qtdNo*sizeof(NoPrimario), indexFile->beg);
 	//Escreve o nó no arquivo de indice
-	indexFile->write((char*)block,sizeof(NohPrimario));
+	indexFile->write((char*)block,sizeof(NoPrimario));
 	//qtd nós
 	atualizaCabecalhoIndPrimario();
-	return header->qtdNoh;
+	return header->qtdNo;
 }
 
-void atualizaNohArquivo(NohPrimario *block){
-	indexFile->seekp(block->posicao*sizeof(NohPrimario), indexFile->beg);
-	indexFile->write((char*)block,sizeof(NohPrimario));
+void atualizaNoArquivo(NoPrimario *block){
+	indexFile->seekp(block->posicao*sizeof(NoPrimario), indexFile->beg);
+	indexFile->write((char*)block,sizeof(NoPrimario));
 }
 
-void InsereChavPagDisponivel(NohPrimario *node, int chave, int apontador){
+void InsereChavPagDisponivel(NoPrimario *node, int chave, int apontador){
 	int i,j;
-	//Percorre as chaves
 	for(i=0; i<node->tamanho; i++){
 		if(node->chave[i] > chave){
 			for(j=node->tamanho; j>i; j--){
-				//Desloca a chave existente
 				node->chave[j] = node->chave[j-1];
 				node->apontador[j] = node->apontador[j-1];
 			}
@@ -66,10 +61,10 @@ void InsereChavPagDisponivel(NohPrimario *node, int chave, int apontador){
 	node->chave[i] = chave;
 	node->apontador[i] = apontador;
 	node->tamanho++;
-	atualizaNohArquivo(node);
+	atualizaNoArquivo(node);
 }
 
-void InsereChavNohDisponivel(NohPrimario *node, int chave, int apontador){
+void InsereChavNoDisponivel(NoPrimario *node, int chave, int apontador){
 	int i,j;
 	for(i=0; i<node->tamanho; i++){
 		if(node->chave[i] > chave){
@@ -83,15 +78,15 @@ void InsereChavNohDisponivel(NohPrimario *node, int chave, int apontador){
 	node->chave[i] = chave;
 	node->apontador[i+1] = -1 * apontador;
 	node->tamanho++;
-	atualizaNohArquivo(node);
+	atualizaNoArquivo(node);
 }
 
-AuxNode* InsereChavPagCheia(NohPrimario *node, int chave, int apontador){
+AuxNode* InsereChavPagCheia(NoPrimario *node, int chave, int apontador){
 	// Trata a inserção da chave para o caso em que a página de dados já está cheia
 	int i,j, pivot, inserted=0;
-	NohPrimario *newNodeReturn = NULL;
+	NoPrimario *newNodeReturn = NULL;
 	AuxNode *fatherNode = NULL;
-	newNodeReturn = criarNovoNohPrimario();
+	newNodeReturn = criarNovoNoPrimario();
 	fatherNode = (AuxNode *) malloc(sizeof(AuxNode));
 	pivot = node->chave[ORDER_M];
 	node->chave[ORDER_M] = 0;
@@ -144,9 +139,9 @@ AuxNode* InsereChavPagCheia(NohPrimario *node, int chave, int apontador){
 			newNodeReturn->tamanho++;
 		}
 	}
-	newNodeReturn->posicao = insereNohArqIndice(newNodeReturn);
-	atualizaNohArquivo(newNodeReturn);
-	atualizaNohArquivo(node);
+	newNodeReturn->posicao = insereNoArqIndice(newNodeReturn);
+	atualizaNoArquivo(newNodeReturn);
+	atualizaNoArquivo(node);
 	fatherNode->chave = pivot;
 	fatherNode->ponteiroEsquerda = -1 * node->posicao;
 	fatherNode->ponteiroDireita = -1 * newNodeReturn->posicao;
@@ -154,11 +149,11 @@ AuxNode* InsereChavPagCheia(NohPrimario *node, int chave, int apontador){
 	return fatherNode;
 }
 
-AuxNode* InsereChavNohCheio(NohPrimario *node, int chave, int apontador){
+AuxNode* InsereChavNoCheio(NoPrimario *node, int chave, int apontador){
 	int i,j, pivot, inserted=0;
-	NohPrimario *newNodeReturn = NULL;
+	NoPrimario *newNodeReturn = NULL;
 	AuxNode *fatherNode = NULL;
-	newNodeReturn = criarNovoNohPrimario();
+	newNodeReturn = criarNovoNoPrimario();
 	fatherNode = (AuxNode *) malloc(sizeof(AuxNode));
 	pivot = node->chave[ORDER_M];
 	if(chave < pivot){
@@ -208,10 +203,10 @@ AuxNode* InsereChavNohCheio(NohPrimario *node, int chave, int apontador){
 		}
 	}
 	newNodeReturn->apontador[N_POINTERS_PRIM] = node->apontador[N_POINTERS_PRIM];
-	newNodeReturn->posicao = insereNohArqIndice(newNodeReturn);
+	newNodeReturn->posicao = insereNoArqIndice(newNodeReturn);
 	node->apontador[N_POINTERS_PRIM] = -1 * newNodeReturn->posicao;
-	atualizaNohArquivo(node);
-	atualizaNohArquivo(newNodeReturn);
+	atualizaNoArquivo(node);
+	atualizaNoArquivo(newNodeReturn);
 	fatherNode->chave = pivot;
 	fatherNode->ponteiroEsquerda = -1 * node->posicao;
 	fatherNode->ponteiroDireita = -1 * newNodeReturn->posicao;
@@ -219,21 +214,21 @@ AuxNode* InsereChavNohCheio(NohPrimario *node, int chave, int apontador){
 	return fatherNode;
 }
 
-NohPrimario* consultaNohPrimArquivo(int posicao){
+NoPrimario* consultaNoPrimArquivo(int posicao){
 	//Retorna o nó do arquivo de indice a partir da posição informada
 	if(posicao > 0){
 		cout << "Endereço errado. Insira novamente!" << endl;
 		return NULL;
 	}
-	NohPrimario *node = criarNovoNohPrimario();
+	NoPrimario *node = criarNovoNoPrimario();
 	//Posiciona o cursor na posição
-	indexFile->seekg(-1 * posicao * sizeof(NohPrimario),indexFile->beg);
+	indexFile->seekg(-1 * posicao * sizeof(NoPrimario),indexFile->beg);
 	//Copia o nó 
-	indexFile->read((char *)node, sizeof(NohPrimario));
+	indexFile->read((char *)node, sizeof(NoPrimario));
 	return node;
 }
 
-AuxNode* insereChaveArvore(NohPrimario *node, int chave, int apontador){
+AuxNode* insereChaveArvore(NoPrimario *node, int chave, int apontador){
 	int i,j;
 	AuxNode *nodeReturn = NULL;
 	//Página é índice
@@ -259,18 +254,18 @@ AuxNode* insereChaveArvore(NohPrimario *node, int chave, int apontador){
 			larger++;
 		}
 		posicao = larger;
-		nodeReturn = insereChaveArvore(consultaNohPrimArquivo(node->apontador[posicao]),chave,apontador);
+		nodeReturn = insereChaveArvore(consultaNoPrimArquivo(node->apontador[posicao]),chave,apontador);
 		if(nodeReturn != NULL){
 			//Caso a página tenha espaço
 			if(node->chave[N_CHAV_PRIM] == 0){
-				InsereChavNohDisponivel(node, nodeReturn->chave, -1 * nodeReturn->ponteiroDireita);
+				InsereChavNoDisponivel(node, nodeReturn->chave, -1 * nodeReturn->ponteiroDireita);
 				free(nodeReturn);
 				nodeReturn = NULL;
 			}
 			//Caso a página não tenha espaço
 			else{
 				AuxNode *newNodeReturn = NULL;
-				newNodeReturn = InsereChavNohCheio(node, nodeReturn->chave, -1 * nodeReturn->ponteiroDireita);
+				newNodeReturn = InsereChavNoCheio(node, nodeReturn->chave, -1 * nodeReturn->ponteiroDireita);
 				free(nodeReturn);
 				nodeReturn = newNodeReturn;
 			}
@@ -293,18 +288,18 @@ AuxNode* insereChaveArvore(NohPrimario *node, int chave, int apontador){
 
 void insereNaArvore(int chave, int apontador){
 	AuxNode *nodeReturn;
-	nodeReturn = insereChaveArvore(consultaNohPrimArquivo(header->posicaoRaiz),chave,apontador);
+	nodeReturn = insereChaveArvore(consultaNoPrimArquivo(header->posicaoRaiz),chave,apontador);
 	if(nodeReturn != NULL){
-		NohPrimario *newNodeReturn;
+		NoPrimario *newNodeReturn;
 		int pos;
-		newNodeReturn = criarNovoNohPrimario();
+		newNodeReturn = criarNovoNoPrimario();
 		newNodeReturn->chave[0] = nodeReturn->chave;
 		newNodeReturn->apontador[0] = nodeReturn->ponteiroEsquerda;
 		newNodeReturn->apontador[1] = nodeReturn->ponteiroDireita;
 		newNodeReturn->tamanho++;
-		pos = insereNohArqIndice(newNodeReturn);
+		pos = insereNoArqIndice(newNodeReturn);
 		newNodeReturn->posicao = pos;
-		atualizaNohArquivo(newNodeReturn);
+		atualizaNoArquivo(newNodeReturn);
 		header->posicaoRaiz = -1 * pos;
 		atualizaCabecalhoIndPrimario();
 		free(newNodeReturn);
@@ -337,9 +332,9 @@ void InsereArqIndicePrim(fstream *hashFile, fstream *primIdxFile){
 	dataFile = hashFile;
 
 	inicializaCabecalhoPrimario();
-	NohPrimario *root = criarNovoNohPrimario();
-	root->posicao = insereNohArqIndice(root); //Escreve nó raiz no arquivo
-	atualizaNohArquivo(root);
+	NoPrimario *root = criarNovoNoPrimario();
+	root->posicao = insereNoArqIndice(root); //Escreve nó raiz no arquivo
+	atualizaNoArquivo(root);
 	free(root);
 	populaArqIndicePrim();
 }
@@ -381,7 +376,7 @@ void closeFiles(){
 
 int pesquisaChavArqIndPrim(const char *pathDataFile,const char *pathIndexFile, int chave){
 	int apontador, pos, smaller, larger, posPointer, i, numReadBlocks=0;
-	NohPrimario *node,*aux;
+	NoPrimario *node,*aux;
 	abreArqIndice(pathIndexFile);
 	abreArqDados(pathDataFile);
 	consultaCabecalhoArqIndicePrim();
@@ -389,7 +384,7 @@ int pesquisaChavArqIndPrim(const char *pathDataFile,const char *pathIndexFile, i
 	pos = header->posicaoRaiz;
 
 	while(1){
-		node = consultaNohPrimArquivo(pos);
+		node = consultaNoPrimArquivo(pos);
 		numReadBlocks++;
 		if(node != NULL){
 			if(node->apontador[0] < 0){

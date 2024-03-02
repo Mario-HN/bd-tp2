@@ -1,20 +1,34 @@
-#include <iostream>     
+#include <iostream>
+#include <fstream>
 #include "hash.hpp"
 
-int main(int argc, char *argv[])
-{
-    if(argc<2) {
-        cout << "Digite o ID que deseja buscar.\nEx: findrec <ID>\n";
-        return 1;
-    }
+using namespace std;
 
-    fstream *hashFile = new fstream(HASH_FILE_NAME,fstream::in|ios::binary);
+int main(int argc, char* argv[]) {
+  // Validação da entrada
+  if (argc < 2) {
+    cout << "Erro: ID não especificado." << endl;
+    cout << "Ex: findrec <ID>" << endl;
+    return 1;
+  }
 
-    if (hashFile->is_open()) {
-        buscaRegistroPorId(hashFile,atoi(argv[1]));   
-    }
-    else {
-        cout << "Erro ao abrir o arquivo especificado.\n";
-    }
-    return 0;
+  // Abrindo o arquivo de hash
+  fstream hashFile(HASH_FILE_NAME, ios::in | ios::binary);
+
+  // Verificando se o arquivo foi aberto com sucesso
+  if (!hashFile.is_open()) {
+    cout << "Erro ao abrir o arquivo de hash." << endl;
+    return 1;
+  }
+
+  // Obtendo o ID do registro a ser buscado
+  int id = atoi(argv[1]);
+
+  // Buscando o registro no arquivo de hash
+  buscaRegistroPorId(&hashFile, id);
+
+  // Fechando o arquivo de hash
+  hashFile.close();
+
+  return 0;
 }

@@ -1,23 +1,25 @@
 # Alunos
-Gabriel Pacheco, Max Souza, Noah Diunkz
+Beatriz Emilly Silva Aguiar, 
+Matheus Souza de Oliveira e 
+Mario Haddad Neto
 
-------------------------------------------------------------------
 
 # Pré-requisitos
 
-- artigo.csv precisa estar descompactado e na pasta raiz.
-- os arquivos estão organizados por diretórios, então ao executar fora das pastas é importante passar o path. 
+- É necessário descompactar o arquivo "artigo.csv" na pasta root.
+- Tente executar os arquivos nas pastas que estão, para não precisar alterar paths. 
 
-------------------------------------------------------------------
 
 # Como Executar
 
-Os comandos abaixo já estão organizados para serem executados dentro do diretório raiz
+Os comandos estão organizados para serem executados dentro do diretório root:
 
 - Para rodar upload.cpp
 
   ```
   g++ B+Tree/IndicePrimario.cpp B+Tree/IndiceSecundario.cpp Implementacao/hash.cpp Implementacao/upload.cpp -o upload
+  ```
+  ```
   ./upload artigo.csv
   ```
 
@@ -25,20 +27,25 @@ Os comandos abaixo já estão organizados para serem executados dentro do diret�
 
   ```
   g++ Implementacao/findrec.cpp Implementacao/hash.cpp -o findrec
-  ./findrec <idDoRegistro>
+  ```
+  ```
+  ./findrec <ID do Registro>
   ```
 
 - Para o seek1
 
   ```
   g++ B+Tree/IndicePrimario.cpp B+Tree/IndiceSecundario.cpp Implementacao/hash.cpp Implementacao/seek1.cpp -o seek1
-  ./seek1 <tituloDoRegistro>
+  ```
+  ```
+  ./seek1 <ID ou Título do Registro>
   ```
 
 - Para o seek2
 
   ```
   g++ B+Tree/IndicePrimario.cpp B+Tree/IndiceSecundario.cpp Implementacao/hash.cpp Implementacao/seek2.cpp -o seek2
-  ./seek2 <tituloDoRegistro>
   ```
-------------------------------------------------------------------
+  ```
+  ./seek2 <ID ou Título do Registro>
+  ```

@@ -1,6 +1,9 @@
 #ifndef PRIMARY_INDEX_HPP
-#define PRIMARY_INDEX_HPP
 
+#define ORDER_M 1000                    //Ordem da árvore
+#define N_POINTERS_PRIM 2 * ORDER_M     //Quantidade de apontadores para cada nó
+#define N_CHAV_PRIM N_POINTERS_PRIM - 1 //Quantidade de chaves para cada nó
+#define PRIMARY_INDEX_HPP
 #define PRIM_INDEX_FILE_NAME "primaryIndexFile"
 
 #include <stdio.h>
@@ -12,21 +15,13 @@
 #include "../Implementacao/hash.hpp"
 using namespace std;
 
-//Ordem da árvore
-#define ORDER_M 1000
 
-//Quantidade de apontadores para cada nó
-#define N_POINTERS_PRIM 2 * ORDER_M
-
-//Quantidade de chaves para cada nó
-#define N_CHAV_PRIM N_POINTERS_PRIM - 1
-
-typedef struct NohPrimario{
+typedef struct NoPrimario{
 	int tamanho;
 	int posicao;
 	int chave[2*ORDER_M];
 	int apontador[2*ORDER_M+1];
-} NohPrimario;
+} NoPrimario;
 
 typedef struct AuxNode{
 	int chave;
@@ -36,7 +31,7 @@ typedef struct AuxNode{
 
 typedef struct Header{
 	int posicaoRaiz;
-	int qtdNoh;
+	int qtdNo;
 } Header;
 
 void InsereArqIndicePrim(fstream *hashFile, fstream *primIdxFile);
