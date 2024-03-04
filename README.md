@@ -40,7 +40,7 @@ Os comandos estão organizados para serem executados dentro do diretório root:
   g++ B+Tree/IndicePrimario.cpp B+Tree/IndiceSecundario.cpp Implementacao/hash.cpp Implementacao/seek1.cpp -o seek1
   ```
   ```
-  ./seek1 <ID ou Título do Registro>
+  ./seek1 <ID>
   ```
 
 - Para o seek2
@@ -49,5 +49,5 @@ Os comandos estão organizados para serem executados dentro do diretório root:
   g++ B+Tree/IndicePrimario.cpp B+Tree/IndiceSecundario.cpp Implementacao/hash.cpp Implementacao/seek2.cpp -o seek2
   ```
   ```
-  ./seek2 <ID ou Título do Registro>
+  ./seek2 <Título do Registro>
   ```

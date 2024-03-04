@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]){
 	if(argc != 2){
-		cout << "Qual o título do registro que deseja procurar?.\nEx: seek2 <Titulo>\n" <<endl;
+		cout << "Qual o título do registro, iqual ao informado, que busca?.\nEx: seek2 <Titulo>\n" <<endl;
 		return 1;
 	}
     fstream *hashFile = new fstream(HASH_FILE_NAME,fstream::in|ios::binary);
@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
         pesquisaChavArqIndSec(hashFile,secIdxFile, argv[1]);   
     }
     else {
-        cout << "Não foi possível abrir o arquivo.\n";
+        cout << "Não consegui abrir o arquivo.\n";
     }
     return 0;
 	
