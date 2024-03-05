@@ -12,7 +12,7 @@ Mario Haddad Neto
 - Tente executar os arquivos nas pastas que estão, para não precisar alterar paths. 
 
 
-# Como Executar
+# Executando as funções
 
 Os comandos estão organizados para serem executados dentro do diretório root:
 
